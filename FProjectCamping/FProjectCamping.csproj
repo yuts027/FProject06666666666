@@ -219,6 +219,7 @@
     <Compile Include="Models\ViewModels\Orders\OrderItems.cs" />
     <Compile Include="Models\ViewModels\Orders\PayOrderVm.cs" />
     <Compile Include="Models\ViewModels\Rooms\RenameVm.cs" />
+    <Compile Include="Models\ViewModels\Rooms\RoomtypesVM.cs" />
     <Compile Include="Models\ViewModels\Rooms\RoomtypeVM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

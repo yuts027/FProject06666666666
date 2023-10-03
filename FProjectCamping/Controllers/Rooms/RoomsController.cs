@@ -5,35 +5,39 @@ using FProjectCamping.Models.ViewModels.Rooms;
 using Microsoft.Ajax.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
+using AuthorizeAttribute = System.Web.Mvc.AuthorizeAttribute;
 
 namespace FProjectCamping.Controllers.Rooms
 {
 	public class RoomsController : Controller
 	{
 		// GET: Rooms
+		[Authorize]
+
 		public ActionResult Roomtype(int roomtypeid = 0, int selectedRoomTypeId = 0)
 		{
-			int roomTypeIdFromDatabase = 0; // 初始化为0，以防获取失败或不需要时的默认值
+			int roomTypeIdFromDatabase = 0; 
 			if (selectedRoomTypeId != 0)
 			{
-				// 使用 selectedRoomTypeId 来执行特定操作
+			
 				var branches = GetRoomTypeVm(selectedRoomTypeId);
 				ViewBag.hotrooms = branches;
 			}
 			else
 			{
-				// 使用 roomtypeid 参数来执行默认操作
+				
 				var branches = GetRoomTypeVm(roomtypeid);
 				ViewBag.hotrooms = branches;
 
 
 			}
 
-			// 将 roomTypeIdFromDatabase 和 selectedRoomTypeId 传递给视图
+	
 			ViewBag.RoomTypeIdFromDatabase = roomTypeIdFromDatabase;
 			ViewBag.SelectedRoomTypeId = selectedRoomTypeId;
 
@@ -51,6 +55,7 @@ namespace FProjectCamping.Controllers.Rooms
 					WeekdayPrice = c.WeekdayPrice,
 					RoomTypeName = c.RoomType.Name,
 					RoomtypeId = c.RoomTypeId,
+					Description = c.Description,
 					Photo=c.Photo
 				});
 
@@ -71,12 +76,56 @@ namespace FProjectCamping.Controllers.Rooms
 
 
 
-		public ActionResult Forestarea()
+		public ActionResult Forestarea(int? roomTypeId)
 		{
+			string RoomtypeName = roomTypeId == 1 ? "音浪" : "南風苑";
+
+			var db = new AppDbContext();
+			var roomtype = db.RoomTypes.Where(r => r.Name.Contains(RoomtypeName)).ToList();
+			List<Room> rooms = new List<Room>();
+			foreach(var r in roomtype)
+			{
+				var roomsWithRoomTypes = db.Rooms
+		   .Include(room => room.RoomType)  
+		   .FirstOrDefault(room => room.RoomTypeId == r.Id);
+
+				if (roomsWithRoomTypes != null)
+				{
+					rooms.Add(roomsWithRoomTypes);
+				}
+
+			}
+
+			ViewBag.Area = roomtype;
+			ViewBag.Rooms = rooms;	
+			
+
 			return View();
 		}
-		public ActionResult RiversideDistrict()
+		public ActionResult RiversideDistrict(int? roomTypeId)
 		{
+
+			string RoomtypeName = roomTypeId == 2 ? "南風苑" : "音浪";
+			var db = new AppDbContext();
+			var roomtype = db.RoomTypes.Where(r => r.Name.Contains(RoomtypeName)).ToList();
+			List<Room> rooms = new List<Room>();
+			foreach (var r in roomtype)
+			{
+				var roomsWithRoomTypes = db.Rooms
+		   .Include(room => room.RoomType)
+		   .FirstOrDefault(room => room.RoomTypeId == r.Id);
+
+				if (roomsWithRoomTypes != null)
+				{
+					rooms.Add(roomsWithRoomTypes);
+				}
+
+			}
+
+			ViewBag.Area = roomtype;
+			ViewBag.Rooms = rooms;
+
+
 			return View();
 		}
 

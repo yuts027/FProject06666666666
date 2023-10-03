@@ -1,6 +1,7 @@
 ﻿@using FProjectCamping.Models.ViewModels.Rooms
 @{ ViewBag.Title = "房型";
-    var hotrooms = ViewBag.hotrooms as List<RoomtypeVM>; }
+    var hotrooms = ViewBag.hotrooms as List<RoomtypeVM>; 
+ }
 
 <main>
     <div class="main">
@@ -30,9 +31,7 @@
 
             @foreach (var room in hotrooms)
             {
-
                 @Html.Partial("RoomsPartial", room);
-
             }
 
             <hr />
@@ -77,11 +76,11 @@
             const urlParams = new URLSearchParams(window.location.search);
             const selectedRoomTypeId = urlParams.get('selectedRoomTypeId');
 
-            // 获取下拉列表元素
+            // 獲取下拉列表元素
             const roomtypeDropdown = document.getElementById('RoomtypeDropdown');
 
             if (selectedRoomTypeId !== null) {
-                // 设置选中项
+                //設置選中項
                 roomtypeDropdown.value = selectedRoomTypeId;
                 console.log(selectedRoomTypeId)
             }
@@ -132,14 +131,14 @@ roomtypeDropdown.addEventListener('change', function () {
                 var selectedDate = new Date(arDateInput.value);
                 checkInDate = selectedDate;
 
-                // 设置退房日期的最小值为入住日期的隔天
+                // 設置退房日期的最小值為入住日期的隔天
                 var nextDay = new Date(selectedDate);
                 nextDay.setDate(selectedDate.getDate() + 1);
                 deDateInput.min = nextDay.toISOString().split("T")[0];
 
-                // 检查退房日期是否早于入住日期
+                // 檢查退房日期是否早於入住日期
                 if (new Date(deDateInput.value) < selectedDate) {
-                    deDateInput.value = arDateInput.value; // 将退房日期设置为入住日期
+                    deDateInput.value = arDateInput.value; // 將退房日期設置為入住日期
                 }
 
                 var maxDate = new Date(selectedDate);
@@ -187,21 +186,21 @@ roomtypeDropdown.addEventListener('change', function () {
                    
                     let SubTotal = 0;
                     let currentDate = new Date(checkInDateValue);
-                    const hasExtraBed = true; /* 根据你的逻辑判断是否有加床 */
+                    const hasExtraBed = true; /* 根據你的邏輯判斷是否有加床 */
 
                     while (currentDate < new Date(checkOutDateValue)) {
-                        const dayOfWeek = currentDate.getDay(); // 获取当前日期的星期几（0-6，0代表星期天，6代表星期六）
+                        const dayOfWeek = currentDate.getDay(); // 獲取當前日期的星期幾（0-6，0代表星期天，6代表星期六）
                         let dailyPrice = 0;
 
                         if (dayOfWeek === 6 || dayOfWeek === 5) {
                             // 如果是星期五或星期六，使用價格2800
                             dailyPrice = 2800;
                         } else {
-                            // 否则使用默认价格2000
+                            // 否則使用默認價格2000
                             dailyPrice = 2000;
                         }
 
-                        // 如果有加床，在当前价格的基础上增加500
+                        // 如果有加床，在當前價格的基礎上增加500
                         //if (hasExtraBed) {
                         //    dailyPrice += 500;
                         //}
@@ -223,8 +222,8 @@ roomtypeDropdown.addEventListener('change', function () {
                     $.ajax({
                         url: '/api/Cart/AddCartItem',
                         type: 'POST',
-                        contentType: 'application/json', // 设置 Content-Type 为 JSON
-                        data: JSON.stringify(requestData), // 将请求数据转换为 JSON 字符串
+                        contentType: 'application/json', // 設置 Content-Type 为 JSON
+                        data: JSON.stringify(requestData), // 將請求數據轉換為 JSON 字符串
                         success: function (data) {
                             console.log('成功響應:', data);
                             updateCartItemCount(data.count);
@@ -235,18 +234,18 @@ roomtypeDropdown.addEventListener('change', function () {
                         }
                     });
                 } else {
-                    // 如果有任何一个字段未选择,禁用按钮或显示错误消息
+                    // 如果有任何一個字段未選擇,禁用按鈕或顯示錯誤消息
                     alert('請填選日期');
                     // 或者禁用按钮的方式如下：
                     // btnOrder.prop('disabled', true);
                 }
             });
 
-            // 在执行搜索后启用"加入订单"
+            // 在執行搜索後啟用"加入訂單"
             $("#booking").click(function () {
                 // 执行搜索的逻辑
 
-                // 启用 "加入订单" 按钮
+                // 啟用 "加入訂單" 按鈕
                 btnOrder.prop('disabled', false);
             });
         });

@@ -28,8 +28,9 @@ namespace FProjectCampingBackend.Controllers
 
 		// GET: Rooms
 
-		public ActionResult Index(SearchRoomsVm vm, int page = 1, int pageSize = 5)
+		public ActionResult Index(SearchRoomsVm vm, int page = 1, int pageSize = 6)
 		{
+
 
 			ViewData["RoomTypeId"] = new DropdownListService().PrepareRoomTypeData();
 			var repo = new RoomsRepository(db);
@@ -51,6 +52,7 @@ namespace FProjectCampingBackend.Controllers
 					Stock = r.Stock,
 					Photo = r.Photo,
 
+
 				};
 				result.Add(roomsVm);
 
@@ -59,7 +61,6 @@ namespace FProjectCampingBackend.Controllers
 			var pagedRooms = result.OrderBy(x => x.Id).ToPagedList(page, pageSize);
 			return View(pagedRooms);
 		}
-
 
 
 		public ActionResult Upload()
@@ -459,14 +460,17 @@ namespace FProjectCampingBackend.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult DeleteConfirmed(int id)
 		{
-			Room room = db.Rooms.Find(id);
+			var room = db.Rooms.Find(id);
+
+			var cartItemsToRemove = db.CartItems.Where(c => c.RoomId == id).ToList();
+			db.CartItems.RemoveRange(cartItemsToRemove);
 
 			var orderItemsToRemove = db.OrderItems.Where(o => o.RoomId == id).ToList();
 			db.OrderItems.RemoveRange(orderItemsToRemove);
 
-
 			db.Rooms.Remove(room);
 			db.SaveChanges();
+
 			return RedirectToAction("Index");
 		}
 
